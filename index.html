@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="imagens/ufo.png" type="image/png">
+    <title>Meu primeiro jogo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js" defer></script>
+    <script src="jogo.js" defer></script>
+    <script src="inicio.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+
+        #tela {
+            background-color: black;
+            z-index: 1;
+            border: dashed 5px white;
+            border-top: none;
+        }
+
+        #play-pause {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: black;
+            color: white;
+            border: dashed 2px white;
+        }
+
+        #inicio {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 2;
+            color: white;
+            transform: translate(-50%, -50%);
+            word-break: break-word;
+            display: inline-block;
+            font-size: 30pt;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="bg" src="imagens/bg.jpg" alt="bg" style="display: none;">
+    <img id="ufo" src="imagens/ufo.png" alt="Ufo" style="display: none;">
+    <img id="asteroid" src="imagens/asteroid.png" alt="Asteroid" style="display: none;">
+    <img id="asteroid2" src="imagens/asteroid-2.png" alt="Asteroid" style="display: none;">
+    <img id="asteroid3" src="imagens/asteroid-3.png" alt="Asteroid" style="display: none;">
+    <img id="asteroid4" src="imagens/asteroid-4.png" alt="Asteroid" style="display: none;">
+    <img id="astronaut" src="imagens/astronaut.png" alt="Astronaut" style="display: none;">
+    <img id="game-over" src="imagens/game-over.png" alt="Game Over" style="display: none;">
+    <img id="space-gun" src="imagens/space-gun.png" alt="Space Gun" style="display: none;">
+    <img id="black-hole-2" src="imagens/black-hole-2.png" alt="Black Hole 2" style="display: none;">
+    <img id="black-hole" src="imagens/black-hole.png" alt="Black Hole" style="display: none;">
+    <img id="alien" src="imagens/alien.png" alt="Alien" style="display: none;">
+    <img id="planet" src="imagens/planet.png" alt="Planet" style="display: none;">
+    <button id="play-pause">
+        <i class="fas fa-3x fa-pause"></i>
+    </button>
+    <h2 id="inicio">Clique ou aperte qualquer tecla</h2>
+    <canvas id="tela"></canvas>
+</body>
+
+</html>
