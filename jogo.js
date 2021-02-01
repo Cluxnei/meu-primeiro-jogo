@@ -1,13 +1,5 @@
 /*
 - IDEIAS
-- Audio
-- Rastro dos cometas e da nave
-- fila de powerups acumulados para usar no U
-- powerup do radar
-- Aumentar a dificuldade com o tempo
-- Poweups (tipos de combustivel)
-- Regras de powerups
-- powerups maleficos
 - Menu e gameover
 */
 
@@ -67,7 +59,7 @@ function ajustarTamanhoDeTela() {
     RATIO = TELA_LARGURA / TELA_ALTURA;
 }
 
-const SOM_ATIVADO = false;
+let SOM_ATIVADO = true;
 
 const TECLAS = new Set();
 const TECLAS_VALIDAS = new Set(['w', 'a', 's', 'd']);
@@ -140,10 +132,10 @@ const PODERES = {
 };
 
 const PODERES_POR_NIVEL = {
-    [PODERES.radar]: [1, 0.05],
-    [PODERES.tsukuyomi]: [1, 0.05],
-    [PODERES.nuke]: [1, 0.05],
-    [PODERES.aumentarMeteoros]: [1, 0.05],
+    [PODERES.radar]: [1, 0.1],
+    [PODERES.tsukuyomi]: [2, 0.09],
+    [PODERES.nuke]: [3, 0.07],
+    [PODERES.aumentarMeteoros]: [0, 0.1],
 };
 
 const PROBABILIDADE_DE_PODER = 0.3;
@@ -273,6 +265,14 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
             MAXIMOS.poderes.quantidade += 1;
             MAXIMOS.obstaculos.passo.max += 3;
             NIVEL++;
+        } else if (PONTOS >= 100 && NIVEL === 3) {
+            MAXIMOS.combustivel.valor.max += 1;
+            MAXIMOS.poderes.quantidade -= 1;
+            MAXIMOS.obstaculos.passo.max += 1;
+            MAXIMOS.obstaculos.quantidade += 30;
+            MAXIMOS.obstaculos.raio -= 5;
+            MAXIMOS.obstaculos.raioBackup -= 5;
+            NIVEL++;
         }
     }
 
@@ -391,7 +391,7 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
         props.pontos = 0;
         if (poder === PODERES.radar) {
             props.img = blackHole2;
-            props.tempo_de_duracao = 10;
+            props.tempo_de_duracao = 7;
             props.tempo_de_uso = 0;
             props.efeito = (expirado = false) => {
                 MOSTRAR_AREA_DE_ESCANEAMENTO_DE_COLISOES = !expirado;
@@ -399,7 +399,7 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
             };
         } else if (poder === PODERES.tsukuyomi) {
             props.img = blackHole;
-            props.tempo_de_duracao = 20;
+            props.tempo_de_duracao = 15;
             props.tempo_de_uso = 0;
             props.efeito = (expirado = false) => {
                 MOSTRAR_AREA_DE_ESCANEAMENTO_DE_COLISOES = !expirado;
@@ -415,7 +415,7 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
             }
         } else if (poder === PODERES.nuke) {
             props.img = alien;
-            props.tempo_de_duracao = 4;
+            props.tempo_de_duracao = 5;
             props.tempo_de_uso = 0;
             props.efeito = (expirado = false) => {
                 MOSTRAR_AREA_DE_ESCANEAMENTO_DE_COLISOES = !expirado;
@@ -425,7 +425,7 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
         } else if (poder === PODERES.aumentarMeteoros) {
             props.malefico = true;
             props.img = planet;
-            props.tempo_de_duracao = 60;
+            props.tempo_de_duracao = 25;
             props.tempo_de_uso = 0;
             props.efeito = (expirado = false) => {
                 if (expirado) {
@@ -442,7 +442,6 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
                 MAXIMOS.obstaculos.raio++;
             }
         }
-        FILA_PODERES.length < MAXIMOS.poderes.fila && poder !== PODERES.aumentarMeteoros && FILA_PODERES.push(props);
         PODERES_NO_JOGO.push(props);
     }
 
@@ -942,7 +941,7 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
             const coeficienteOpacidade = 1 / PODERES_NO_JOGO[i].tracado.length;
             let opacidade = 0.05;
             for (let j = 0; j < PODERES_NO_JOGO[i].tracado.length - 1; j++) {
-                tela.strokeStyle = `rgba(253,100,10,${opacidade})`;
+                tela.strokeStyle = PODERES_NO_JOGO[i].malefico ? `rgba(253,100,10,${opacidade})` : `rgba(51,150,0,${opacidade})`;
                 tela.beginPath();
                 tela.moveTo(PODERES_NO_JOGO[i].tracado[j + 1].x, PODERES_NO_JOGO[i].tracado[j + 1].y);
                 tela.lineTo(PODERES_NO_JOGO[i].tracado[j].x, PODERES_NO_JOGO[i].tracado[j].y);
@@ -1010,7 +1009,7 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
 
     function renderizarPontos() {
         tela.fillStyle = 'white';
-        tela.font = '6vw Arial';
+        tela.font = '3vw Arial';
         tela.fillText(PONTOS.toString(), 10, TELA_ALTURA - 10);
     }
 
@@ -1018,10 +1017,18 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
         if (typeof PODER_ATIVO.tipo === 'undefined') {
             return;
         }
-        tela.fillStyle = 'red';
-        tela.font = '6vw Arial';
+        tela.strokeStyle = 'red';
         const tempo = PODER_ATIVO.tempo_de_duracao - PODER_ATIVO.tempo_de_uso;
-        tela.fillText(tempo.toString(), TELA_LARGURA - 100, TELA_ALTURA - 10);
+        const graus = Math.PI * 2 / PODER_ATIVO.tempo_de_duracao;
+        tela.strokeStyle = PODER_ATIVO.malefico ? 'red' : 'green';
+        tela.beginPath();
+        tela.arc(NAVE.x, NAVE.y, NAVE.raio + 5, graus * PODER_ATIVO.tempo_de_uso, Math.PI * 2);
+        tela.stroke();
+        tela.beginPath();
+        tela.arc(15 + PODER_ATIVO.raio, TELA_ALTURA - (60 + PODER_ATIVO.raio), PODER_ATIVO.raio + 5, graus * PODER_ATIVO.tempo_de_uso, Math.PI * 2);
+        tela.stroke();
+        tela.drawImage(PODER_ATIVO.img, PODER_ATIVO.raio, TELA_ALTURA - (70 + PODER_ATIVO.raio + 5), PODER_ATIVO.raio * 2, PODER_ATIVO.raio * 2);
+        // tela.fillText(tempo.toString(), 10, TELA_ALTURA - 70);
     }
 
 

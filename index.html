@@ -33,7 +33,8 @@
             border-top: none;
         }
 
-        #play-pause {
+        #play-pause,
+        #sound {
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -45,6 +46,11 @@
             background-color: black;
             color: white;
             border: dashed 2px white;
+        }
+
+        #sound {
+            bottom: 100px;
+            right: 10px;
         }
 
         #inicio {
@@ -77,6 +83,9 @@
     <img id="planet" src="imagens/planet.png" alt="Planet" style="display: none;">
     <button id="play-pause">
         <i class="fas fa-3x fa-pause"></i>
+    </button>
+    <button id="sound">
+        <i class="fas fa-3x fa-volume-mute"></i>
     </button>
     <h2 id="inicio">Clique ou aperte qualquer tecla</h2>
     <canvas id="tela"></canvas>

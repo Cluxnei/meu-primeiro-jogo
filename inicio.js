@@ -25,6 +25,7 @@ window.addEventListener('load', () => {
     const blackHole = document.getElementById('black-hole');
     const blackHole2 = document.getElementById('black-hole-2');
     const playPause = document.getElementById('play-pause');
+    const sound = document.getElementById('sound');
     const alien = document.getElementById('alien');
     const planet = document.getElementById('planet');
     playPause.addEventListener('click', () => {
@@ -39,6 +40,19 @@ window.addEventListener('load', () => {
         const i = playPause.children[0];
         i.classList.remove('fa-pause');
         i.classList.add('fa-play');
+    });
+    sound.addEventListener('click', () => {
+        if (SOM_ATIVADO) {
+            SOM_ATIVADO = false;
+            const i = sound.children[0];
+            i.classList.remove('fa-volume-mute');
+            i.classList.add('fa-volume-up');
+            return;
+        }
+        SOM_ATIVADO = true;
+        const i = sound.children[0];
+        i.classList.remove('fa-volume-up');
+        i.classList.add('fa-volume-mute');
     });
     let iniciado = false;
     const start = () => {
