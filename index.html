@@ -8,8 +8,8 @@
     <title>Meu primeiro jogo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js" defer></script>
-    <script src="jogo.js" defer></script>
-    <script src="inicio.js" defer></script>
+    <script src="jogo.js?v=2" defer></script>
+    <script src="inicio.js?v=2" defer></script>
     <style>
         * {
             margin: 0;
@@ -18,12 +18,61 @@
         }
 
         body {
-            display: flex;
             width: 100vw;
             height: 100vh;
+            background-color: black;
+        }
+
+        #menu,
+        #jogo {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            background-image: url("imagens/bg.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            color: white;
+        }
+
+        #menu h2,
+        #menu button {
+            font-size: 30pt;
+            margin-bottom: 20px;
+        }
+
+        #menu button {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
             background-color: black;
+            color: white;
+            border: dashed 5px white;
+            width: 30vw;
+        }
+
+        #inicio {
+            color: white;
+            background-color: transparent;
+            border: dashed 5px white;
+            font-size: 30pt;
+            padding: 10px;
+            width: 30vw;
+            margin-bottom: 30px;
+        }
+
+        #jogo {
+            flex-direction: row;
         }
 
         #tela {
@@ -40,29 +89,57 @@
             justify-content: center;
             align-items: center;
             padding: 10px;
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
             background-color: black;
             color: white;
             border: dashed 2px white;
+            z-index: 2;
         }
 
         #sound {
-            bottom: 100px;
-            right: 10px;
+            margin-left: 20px;
         }
 
-        #inicio {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            z-index: 2;
-            color: white;
-            transform: translate(-50%, -50%);
-            word-break: break-word;
-            display: inline-block;
+        #ranking h2 {
             font-size: 30pt;
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+
+        #ranking {
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            flex: 1;
+        }
+
+        #ranking table {
+            border: dashed 2px white;
+            padding: 5px 10px;
+            width: 80%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-height: 80%;
+            text-align: left;
+            font-size: 30pt;
+        }
+
+        #ranking table td,
+        #ranking table th {
+            padding: 10px;
+        }
+
+        #ranking table td {
+            border-top: dashed 2px white;
+            text-overflow: ellipsis;
+            word-break: none;
+        }
+
+        #ranking table td:nth-child(even) {
+            border-left: dashed 2px white;
         }
     </style>
 </head>
@@ -81,14 +158,38 @@
     <img id="black-hole" src="imagens/black-hole.png" alt="Black Hole" style="display: none;">
     <img id="alien" src="imagens/alien.png" alt="Alien" style="display: none;">
     <img id="planet" src="imagens/planet.png" alt="Planet" style="display: none;">
-    <button id="play-pause">
-        <i class="fas fa-3x fa-pause"></i>
-    </button>
-    <button id="sound">
-        <i class="fas fa-3x fa-volume-mute"></i>
-    </button>
-    <h2 id="inicio">Clique ou aperte qualquer tecla</h2>
-    <canvas id="tela"></canvas>
+    <div id="menu">
+        <h2>Digite seu nick</h2>
+        <input id="inicio" placeholder="Seu nick" value="" maxlength="30" />
+        <button id="start-game">Play</button>
+        <!-- <button id="view-ranking">Ranking</button> -->
+    </div>
+    <div id="jogo" style="display: none;">
+        <canvas id="tela"></canvas>
+        <div id="ranking">
+            <div style="width: 80%;">
+                <div style="display: flex; flex-direction: row;">
+                    <button id="play-pause">
+                        <i class="fas fa-3x fa-pause"></i>
+                    </button>
+                    <button id="sound">
+                        <i class="fas fa-3x fa-volume-mute"></i>
+                    </button>
+                </div>
+                <h2>Ranking top 20</h2>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nick</th>
+                        <th>Record</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 
 </html>

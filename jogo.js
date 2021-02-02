@@ -79,6 +79,8 @@ const TIPOS_DE_COMBUSTIVEIS = { ...TIPOS_BASICOS };
 
 const INTERVALO_DE_GERACAO_DE_OBSTACULOS = 900;
 
+const INTERVALO_ATUALIZACAO_RANKING = 3000;
+
 let MOSTRAR_AREA_DE_ESCANEAMENTO_DE_COLISOES = false;
 let MOSTRAR_RAIOS_DE_ESCANEAMENTO_DE_COLISOES = false;
 let RETARDAR_OBSTACULOS_NA_AREA_DE_ESCANEAMENTO_DE_COLISOES = false;
@@ -243,6 +245,12 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
         ---- ATUALIZAÇÃO -------
         *********------*********
     */
+
+    function computarRanking() {
+        setInterval(() => {
+            enviarPontos(PONTOS).then(() => makeRanking());
+        }, INTERVALO_ATUALIZACAO_RANKING);
+    }
 
     function computar() {
         computarTracadoNave();
@@ -559,6 +567,8 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
     }
 
     function loop() {
+        !SOM_ATIVADO && SONS.trilha_sonora.playing() && SONS.trilha_sonora.stop();
+        SOM_ATIVADO && !SONS.trilha_sonora.playing() && SONS.trilha_sonora.play();
         requestAnimationFrame(loop);
         if (reiniciado) {
             vivo = true;
@@ -613,10 +623,12 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
         Math.random() >= 1 - PROBABILIDADE_DE_PODER && gerarPoder();
         setTimeout(gerarCombustiveis, random(TEMPO_DE_GERACAO_DE_COMBUSTIVEL.min, TEMPO_DE_GERACAO_DE_COMBUSTIVEL.max));
     }
-    let playGameOver = true;
+    let playGameOver = true, pontosEnviados = false;
     function fimDeJogo() {
+        !pontosEnviados && enviarPontos(PONTOS);
         playGameOver && SOM_ATIVADO && SONS.morte.play();
         playGameOver = false;
+        pontosEnviados = true;
         vivo = false;
         renderizarFimDeJogo();
     }
@@ -641,6 +653,7 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
         playGameOver = true;
         turbo = false;
         pausado = false;
+        pontosEnviados = false;
         ajustarTamanhoDeTela();
     }
 
@@ -1041,4 +1054,5 @@ function iniciar(tela, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut
     gerarObstaculos();
     gerarCombustiveis();
     loop();
+    computarRanking();
 }

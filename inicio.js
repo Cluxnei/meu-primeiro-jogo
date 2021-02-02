@@ -1,3 +1,51 @@
+function makeRanking(container = null, ranking = null) {
+    if (container === null) {
+        container = document.querySelector('#ranking table tbody');
+    }
+    const make = (rankingArray) => {
+        container.innerHTML = rankingArray.reduce((acc, { nick, record }) => `${acc}${getRankingElement(nick, record)}`, '');
+    };
+    ranking === null ? loadRanking().then(make) : make(ranking);
+}
+
+function loadRanking() {
+    if (!'fetch' in window) {
+        return;
+    }
+    return fetch('http://api-meu-primeiro-jogo.cluxnei.com').then(res => res.json());
+}
+
+function enviarPontos(record = 0) {
+    if (!'fetch' in window) {
+        return;
+    }
+    const nick = getNick();
+    const body = new FormData();
+    body.append('nick', nick);
+    body.append('record', record);
+    return fetch('http://api-meu-primeiro-jogo.cluxnei.com/add.php', { method: 'POST', body }).then((res) => res.json())
+        .then(({ ok, message }) => {
+            if (!ok) {
+                alert(message);
+                window.location.reload();
+                return;
+            }
+        });
+}
+
+function getRankingElement(nick, record) {
+    return `<tr><td>${nick}</td><td>${record}</td></tr>`;
+}
+
+function storeNick() {
+    localStorage.setItem('@nick', document.getElementById('inicio').value.substring(0, 30));
+    return true;
+}
+
+function getNick() {
+    return localStorage.getItem('@nick');
+}
+
 window.addEventListener('load', () => {
     const tela = document.getElementById('tela');
     const ctx = tela.getContext('2d');
@@ -55,15 +103,26 @@ window.addEventListener('load', () => {
         i.classList.add('fa-volume-mute');
     });
     let iniciado = false;
+    function startGame() {
+        if (document.getElementById('inicio').value.substring(0, 30).trim() !== '') {
+            storeNick();
+            start();
+            document.getElementById('start-game').removeEventListener('click', startGame, false);
+        }
+        return;
+    }
+    document.getElementById('start-game').addEventListener('click', startGame, false);
     const start = () => {
         if (!iniciado) {
             iniciar(ctx, ufo, asteroid, asteroid2, asteroid3, asteroid4, astronaut, bg, gameOver, spaceGun, blackHole, blackHole2, alien, planet);
         }
         iniciado = true;
-        document.getElementById('inicio').style.display = 'none';
-        window.removeEventListener('click', start, false);
-        document.removeEventListener('keypress', start, false);
+        document.getElementById('menu').style.display = 'none';
+        document.getElementById('jogo').style.display = '';
+        enviarPontos().then(() => makeRanking());
     };
-    window.addEventListener('click', start, false);
-    document.addEventListener('keypress', start, false);
+    const n = getNick();
+    if (n) {
+        document.getElementById('inicio').value = n;
+    }
 });
