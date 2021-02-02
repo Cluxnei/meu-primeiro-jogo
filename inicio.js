@@ -12,7 +12,7 @@ function loadRanking() {
     if (!'fetch' in window) {
         return;
     }
-    return fetch('http://api-meu-primeiro-jogo.cluxnei.com').then(res => res.json());
+    return fetch('https://cluxnei.com/api-meu-primeiro-jogo').then(res => res.json());
 }
 
 function enviarPontos(record = 0) {
@@ -23,7 +23,7 @@ function enviarPontos(record = 0) {
     const body = new FormData();
     body.append('nick', nick);
     body.append('record', record);
-    return fetch('http://api-meu-primeiro-jogo.cluxnei.com/add.php', { method: 'POST', body }).then((res) => res.json())
+    return fetch('https://cluxnei.com/api-meu-primeiro-jogo/add.php', { method: 'POST', body }).then((res) => res.json())
         .then(({ ok, message }) => {
             if (!ok) {
                 alert(message);
