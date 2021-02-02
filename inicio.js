@@ -9,14 +9,14 @@ function makeRanking(container = null, ranking = null) {
 }
 
 function loadRanking() {
-    if (!'fetch' in window) {
+    if (!('fetch' in window)) {
         return;
     }
-    return fetch('https://cluxnei.com/api-meu-primeiro-jogo').then(res => res.json());
+    return fetch('https://cluxnei.com/api-meu-primeiro-jogo/index.php').then(res => res.json());
 }
 
 function enviarPontos(record = 0) {
-    if (!'fetch' in window) {
+    if (!('fetch' in window)) {
         return;
     }
     const nick = getNick();
