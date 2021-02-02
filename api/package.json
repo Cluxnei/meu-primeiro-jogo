@@ -5,5 +5,9 @@
   "repository": "https://github.com/Cluxnei/meu-primeiro-jogo",
   "author": "Cluxnei",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.14"
+  }
 }
